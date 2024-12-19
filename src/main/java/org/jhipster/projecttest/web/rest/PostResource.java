@@ -9,6 +9,7 @@ import java.util.Objects;
 import java.util.Optional;
 import org.jhipster.projecttest.domain.Post;
 import org.jhipster.projecttest.repository.PostRepository;
+import org.jhipster.projecttest.security.SecurityUtils;
 import org.jhipster.projecttest.web.rest.errors.BadRequestAlertException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -163,7 +164,7 @@ public class PostResource {
         if (eagerload) {
             page = postRepository.findAllWithEagerRelationships(pageable);
         } else {
-            page = postRepository.findAll(pageable);
+            page = postRepository.findByBlogUserLoginOrderByDateDesc(SecurityUtils.getCurrentUserLogin().orElse(null), pageable);
         }
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
